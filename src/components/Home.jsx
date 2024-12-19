@@ -56,78 +56,80 @@ export default function Home(){
         localStorage.removeItem('isWalletConnected');
       }
 
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-green-100 to-yellow-50 flex flex-col items-center justify-center">
-            <h1 className="text-4xl font-bold text-green-800 mb-6 text-center">
-                Farmer Loan Portal
-            </h1>
-    
-            <div className="flex flex-col items-center w-full max-w-md">
-                <div className="walletAddress mb-4 w-full text-center">
-                    {isConnected && (
-                        <p className="bg-green-800 text-white py-2 px-4 rounded shadow-lg">
-                            Connected Wallet: {address}
-                        </p>
-                    )}
-                </div>
-    
-                {isConnected && (
-                    <div className="flex flex-wrap justify-center gap-4 w-full mb-6">
-                        <Link to="/request">
-                            <button
-                                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
-                            >
-                                Loan Request Form
-                            </button>
-                        </Link>
-    
-                        {/* <Link to="/lender/dashboard">
-                            <button
-                                className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
-                            >
-                                All Loan Requests
-                            </button>
-                        </Link> */}
-                    </div>
-                )}
-    
-                <div className="disconnect mb-6 w-full text-center">
-                    {isConnected && (
-                        <button
-                            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
-                            onClick={disconnectWallet}
-                        >
-                            Disconnect Wallet
-                        </button>
-                    )}
-                </div>
-    
-                <div className="grid grid-cols-1 gap-4 w-full text-center">
-                    {!isConnected && (
-                        <button
-                            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
-                            onClick={requestAccount}
-                        >
-                            Connect Wallet
-                        </button>
-                    )}
-    
-                    {isConnected && (
-                        <Link to="/register">
-                            <button
-                                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
-                            >
-                                Register
-                            </button>
-                        </Link>
-                    )}
-                </div>
-            </div>
-    
-            <footer className="mt-10 text-center text-sm text-green-700">
-                Empowering farmers through decentralized technology
-            </footer>
-        </div>
-    );
-    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-100 to-yellow-50 flex flex-col items-center justify-center">
+          <h1 className="text-4xl font-bold text-green-800 mb-6 text-center">
+              Farmer Loan Portal
+          </h1>
+  
+          <div className="flex flex-col items-center w-full max-w-md">
+              <div className="walletAddress mb-4 w-full text-center">
+                  {isConnected && (
+                      <p className="bg-green-800 text-white py-2 px-4 rounded shadow-lg">
+                          Connected Wallet: {address}
+                      </p>
+                  )}
+              </div>
+  
+              {isConnected && (
+                  <div className="flex flex-wrap justify-center gap-4 w-full mb-6">
+                      <Link to="/request">
+                          <button
+                              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
+                          >
+                              Loan Request Form
+                          </button>
+                      </Link>
+  
+                      {/* <Link to="/lender/dashboard">
+                          <button
+                              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
+                          >
+                              All Loan Requests
+                          </button>
+                      </Link> */}
+                  </div>
+              )}
+  
+              <div className="disconnect mb-6 w-full text-center">
+                  {isConnected && (
+                      <button
+                          className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
+                          onClick={disconnectWallet}
+                      >
+                          Disconnect Wallet
+                      </button>
+                  )}
+              </div>
+  
+              <div className="grid grid-cols-1 gap-4 w-full text-center">
+                  {!isConnected && (
+                      <button
+                          className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
+                          onClick={requestAccount}
+                      >
+                          Connect Wallet
+                      </button>
+                  )}
+  
+                  {isConnected && (
+                      <Link to="/register">
+                          <button
+                              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
+                          >
+                              Register
+                          </button>
+                      </Link>
+                  )}
+              </div>
+          </div>
+  
+          <footer className="mt-10 text-center text-sm text-green-700">
+              Empowering farmers through decentralized technology
+          </footer>
+      </div>
+  );
+  
+  
+  
 }

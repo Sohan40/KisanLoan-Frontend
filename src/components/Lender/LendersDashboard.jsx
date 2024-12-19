@@ -1,7 +1,7 @@
 // AllRequests.js
 import React, { useState } from "react";
-import LoanRequests from "../LoanRequests";
-import LendedLoans from "../LendedLoans";
+import LoanRequests from "./LoanRequests";
+import LendedLoans from "./LendedLoans";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 
 const LendersDashboard = () => {

@@ -1,14 +1,14 @@
 // LoanRequests.js
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import LoanCard from "./Lender/LoanCard"; // LoanCard component is reusable
-import Snackbar from "./Lender/Snackbar"; // Reusable Snackbar component
+import LoanCard from "./LoanCard"; // LoanCard component is reusable
+import Snackbar from "./Snackbar"; // Reusable Snackbar component
 
 const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
 const walletProvider = new ethers.BrowserProvider(window.ethereum);
 
-const LoanContractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
-const LoanContractABI = require('../artifacts/contracts/LoanRequest.sol/LoanRequest.json').abi;
+const LoanContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const LoanContractABI = require('../../artifacts/contracts/LoanRequest.sol/LoanRequest.json').abi;
 
 const LoanRequests = () => {
   const [loans, setLoans] = useState([]);
