@@ -27,6 +27,7 @@ const LoanRequests = () => {
           amount: loan[3],
           repaymentPeriod: loan[4].toString(),
           status: "available",
+          cid:loan[6]
         }));
 
       setLoans(formattedLoans);

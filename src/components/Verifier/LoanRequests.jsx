@@ -27,6 +27,7 @@ const LoanRequests = () => {
           amount: ethers.formatEther(loan[3]),
           repaymentPeriod: loan[4].toString(),
           status: "unverified",
+          cid:loan[6]
         }));
 
       setLoans(formattedLoans);

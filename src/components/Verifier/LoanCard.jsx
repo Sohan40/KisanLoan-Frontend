@@ -1,6 +1,18 @@
-import React from "react";
+import React,{useState} from "react";
 import { Link } from "react-router-dom";
+
+
+
 const LoanCard = ({ loan }) => {
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Function to toggle modal visibility
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  
   return (
     <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-1">
       <h3 className="text-2xl font-bold text-green-800 mb-4 break-words">
@@ -30,7 +42,7 @@ const LoanCard = ({ loan }) => {
       </p>
 
       {loan.status === "unverified" && (
-        <Link to={`/verify/${loan.id}`}>
+        <Link to={`/verify/${loan.id}`} state={{loan}}>
           <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300">
             View Details
           </button>
