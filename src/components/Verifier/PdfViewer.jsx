@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import {pdfjs, Document, Page } from 'react-pdf';
+// export default PDFViewerPopup;
+import React, { useState } from "react";
+import { pdfjs, Document, Page } from "react-pdf";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs`;
 
@@ -31,11 +32,14 @@ const PDFViewerPopup = ({ pdfUrl, isModalOpen, closeModal }) => {
               </button>
             </div>
 
-            <div className="pdf-container mt-6">
+            <div
+              className="pdf-container mt-6 overflow-y-scroll"
+              style={{ height: "500px" }} // Set a fixed height for scrolling
+            >
               <Document
                 file={pdfUrl}
                 onLoadSuccess={onLoadSuccess}
-                className="w-full h-full"
+                className="w-full"
               >
                 <Page pageNumber={pageNumber} />
               </Document>
