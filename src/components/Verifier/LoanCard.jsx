@@ -27,7 +27,7 @@ const LoanCard = ({ loan }) => {
         </p>
       )}
       <p className="text-lg text-gray-700 mb-2">
-        <span className="font-semibold">Amount:</span> {loan.amount} ETH
+        <span className="font-semibold">Amount:</span> {loan.amount.toString()} ETH
       </p>
       <p className="text-lg text-gray-700 mb-4">
         <span className="font-semibold">Repayment Period:</span>{" "}

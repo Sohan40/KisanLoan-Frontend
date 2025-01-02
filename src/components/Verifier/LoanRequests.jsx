@@ -41,7 +41,7 @@ const LoanRequests = () => {
         .map((loan) => ({
           id: loan[0].toString(),
           farmer: loan[1],
-          amount: ethers.formatEther(loan[3]),
+          amount: loan[3],
           repaymentPeriod: loan[4].toString(),
           status: "unverified",
           cid: loan[6]

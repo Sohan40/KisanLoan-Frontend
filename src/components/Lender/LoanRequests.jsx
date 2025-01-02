@@ -29,7 +29,7 @@ const LoanRequests = () => {
           status: "available",
           cid:loan[6]
         }));
-
+        console.log(formattedLoans,"hswbxdwuce");
       setLoans(formattedLoans);
     } catch (err) {
       console.log("Error fetching loan data:", err);
@@ -40,7 +40,8 @@ const LoanRequests = () => {
     try {
       const signer = await walletProvider.getSigner();
       const contract = new ethers.Contract(LoanContractAddress, LoanContractABI, signer);
-      const tx = await contract.disburseLoan(id, farmer, { value: amount });
+      
+      const tx = await contract.disburseLoan(id, farmer, { value: ethers.parseEther(amount.toString()) });
       await tx.wait();
 
       setShowSnackbar(true);
