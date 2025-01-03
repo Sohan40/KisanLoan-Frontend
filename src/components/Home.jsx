@@ -113,11 +113,11 @@ export default function Home(){
                   )}
   
                   {isConnected && (
-                      <Link to="/register">
+                      <Link to="/myloans">
                           <button
                               className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
                           >
-                              Register
+                              My Loans
                           </button>
                       </Link>
                   )}
