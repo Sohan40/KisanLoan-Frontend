@@ -1,4 +1,4 @@
-
+// LoanRequests.js
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import LoanCard from "./LoanCard"; // LoanCard component is reusable
@@ -21,7 +21,7 @@ const MyLoans = () => {
       console.log('okokok')
       const allLoans = await contract.getFarmerLoans();
 
-      const formattedLoans = allLoans
+      const formattedLoans = allLoans.filter((loan)=> (loan[7]=== true))
         .map((loan) => ({
           id: loan[0].toString(),
           lender : loan[2],
@@ -36,8 +36,7 @@ const MyLoans = () => {
         }));
         
       setLoans(formattedLoans);
-      console.log(loans,'ok')
-
+      
     } catch (err) {
       console.log("Error fetching loan data:", err);
     }
@@ -50,7 +49,7 @@ const MyLoans = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mt-4 mb-4">Requested Loans</h2>
+      <h2 className="text-2xl font-bold mt-4 mb-4">Sanctioned Loans</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {loans.map((loan) => (
           <LoanCard key={loan.id} loan={loan} />

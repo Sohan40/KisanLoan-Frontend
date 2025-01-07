@@ -21,13 +21,13 @@ const VerifierDashboard = () => {
           className={`w-full py-2 px-4 rounded ${selectedOption === "allLoans" ? "bg-gray-600" : "hover:bg-gray-700"}`}
           onClick={() => { setSelectedOption("allLoans"); setIsSidebarOpen(false); }}
         >
-          All Loans
+          Unverified Loans
         </button>
         <button
           className={`w-full py-2 px-4 rounded ${selectedOption === "lendedLoans" ? "bg-gray-600" : "hover:bg-gray-700"}`}
           onClick={() => { setSelectedOption("lendedLoans"); setIsSidebarOpen(false); }}
         >
-          Lended Loans
+          Approved Loans
         </button>
       </aside>
 

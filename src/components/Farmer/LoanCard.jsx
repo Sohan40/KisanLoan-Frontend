@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const LoanCard = ({ loan, onLend }) => {
   return (
@@ -22,20 +23,17 @@ const LoanCard = ({ loan, onLend }) => {
       </p>
       <p
         className={`text-sm font-semibold mb-4 ${
-          loan.status === true ? "text-green-600" : "text-blue-600"
+          loan.sanctioned ===true ? "text-green-600": (loan.status ? "text-blue-600" : "text-yellow-600")
         }`}
       >
-        Status: {loan.status===true? "Approved":"Pending"}
+        Status: {loan.sanctioned ? "Sanctioned": (loan.status ? "Verified" : "Pending")}
       </p>
 
-      {loan.status === "available" && (
-        <button
-          onClick={onLend}
-          className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300"
-        >
-          Lend Money
-        </button>
-      )}
+      <Link to={`/myloans/${loan.id}`} state={{loan}}>
+                <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300">
+                  View Details
+                </button>
+      </Link>
     </div>
   );
 };

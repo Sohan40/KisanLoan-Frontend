@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from "react";
 import { ethers } from "ethers";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { PinataSDK } from "pinata-web3";
 import PDFViewerPopup from './PdfViewer';
 
@@ -25,6 +25,7 @@ export default function Documents() {
   const [error, setError] = useState(null); // State to handle errors
   const {loan} = useLocation().state || {}
 
+  const navigate = useNavigate();
   useEffect(() => {
 
     const fetchFileCids = async () => {
@@ -67,6 +68,8 @@ export default function Documents() {
     );
     const tx = await contract.approveLoan(loanID);
     tx.wait();
+
+    navigate("/verifier/dashboard")
   };
   const removeLoan = async () => {
     const signer = await walletProvider.getSigner();

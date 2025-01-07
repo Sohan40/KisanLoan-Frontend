@@ -17,6 +17,7 @@ const LoanRequests = () => {
   const fetchRequests = async () => {
     try {
       const contract = new ethers.Contract(LoanContractAddress, LoanContractABI, provider);
+      
       const allLoans = await contract.getLoans();
 
       const formattedLoans = allLoans

@@ -1,4 +1,5 @@
 import React,{useState} from "react";
+import { AiFillDatabase } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
 
@@ -35,13 +36,13 @@ const LoanCard = ({ loan }) => {
       </p>
       <p
         className={`text-sm font-semibold mb-4 ${
-          loan.status === "lended" ? "text-green-600" : "text-blue-600"
+          loan.status ? "text-green-600" : "text-blue-600"
         }`}
       >
-        Status: {loan.status}
+        Status: {loan.status ? "verified" : "unverified"}
       </p>
 
-      {loan.status === "unverified" && (
+      {loan.status === false && (
         <Link to={`/verify/${loan.id}`} state={{loan}}>
           <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300">
             View Details
