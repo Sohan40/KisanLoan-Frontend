@@ -43,7 +43,7 @@ const LoanRequests = () => {
           farmer: loan[1],
           amount: loan[3],
           repaymentPeriod: loan[4].toString(),
-          status: "unverified",
+          status: loan[5],
           cid: loan[6]
         }));
 

@@ -81,13 +81,6 @@ export default function Home(){
                           </button>
                       </Link>
   
-                      {/* <Link to="/lender/dashboard">
-                          <button
-                              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded shadow-lg transition-all"
-                          >
-                              All Loan Requests
-                          </button>
-                      </Link> */}
                   </div>
               )}
   

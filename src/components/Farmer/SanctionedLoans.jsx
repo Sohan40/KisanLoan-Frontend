@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import LoanCard from "./LoanCard"; // LoanCard component is reusable
-import LendersDashboard from "./FarmersDashboard";
+
 const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
 const walletProvider = new ethers.BrowserProvider(window.ethereum);
 
@@ -21,17 +21,15 @@ const MyLoans = () => {
       console.log('okokok')
       const allLoans = await contract.getFarmerLoans();
 
-      const formattedLoans = allLoans
+      const formattedLoans = allLoans.filter((loan)=> (loan[7]=== true))
         .map((loan) => ({
           id: loan[0].toString(),
           farmer: loan[1],
           amount: loan[3],
           repaymentPeriod: loan[4].toString(),
           status: loan[5],
-          sanctioned:loan[7],
           cid:loan[6],
-          emi:loan[8],
-          emiPaidCount:loan[9]
+          sanctioned:loan[7]
         }));
         console.log(formattedLoans,"hswbxdwuce");
       setLoans(formattedLoans);

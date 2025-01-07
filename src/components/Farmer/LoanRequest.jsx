@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { PinataSDK } from "pinata-web3";
+import { useNavigate } from "react-router-dom";
 
 const pinata = new PinataSDK({
   pinataJwt: process.env.REACT_APP_PINATA_JWT,
@@ -22,6 +23,7 @@ const RequestLoan = () => {
     document4: null,
   });
   const [uploadStatus, setUploadStatus] = useState("");
+  const navigate = useNavigate();
 
   // Handle file input changes
   const handleFileChange = (event, documentKey) => {
@@ -72,39 +74,90 @@ const RequestLoan = () => {
   };
 
   // Submit loan request
+  // const submitRequest = async () => {
+  //   if (!loanAmount || !repaymentPeriod || Object.values(documents).some(doc => !doc)) {
+  //     alert("Please fill all fields and upload all documents.");
+  //     return;
+  //   }
+
+  //   try {
+  //     // Upload files to Pinata and get their IPFS hashes
+  //     const fileHashes = await uploadFilesToPinata();
+  //     console.log("File hashes:", fileHashes);
+
+  //     // Upload metadata with all IPFS hashes and get final IPFS hash
+  //     const finalHash = await uploadMetadata(fileHashes);
+  //     console.log("Final IPFS hash:", finalHash);
+
+  //     // Connect to Ethereum
+  //     const walletProvider = new ethers.BrowserProvider(window.ethereum);
+  //     const signer = await walletProvider.getSigner();
+
+  //     const loanContract = new ethers.Contract(
+  //       LoanContractAddress,
+  //       LoanContractABI,
+  //       signer
+  //     );
+
+  //     // Send loan request transaction with the final IPFS hash
+  //     const tx = await loanContract.requestLoan(
+  //       loanAmount, // Loan amount in Ether
+  //       repaymentPeriod, // Repayment period in months
+  //       finalHash // Final IPFS hash containing all document hashes
+  //     );
+  //     await tx.wait();
+
+  //     alert("Loan request submitted successfully!");
+  //     setLoanAmount("");
+  //     setRepaymentPeriod("");
+  //     setDocuments({
+  //       document1: null,
+  //       document2: null,
+  //       document3: null,
+  //       document4: null,
+  //     });
+  //   } catch (error) {
+  //     console.error("Error submitting loan request:", error);
+  //     alert("Failed to submit loan request.");
+  //   }
+  // };
   const submitRequest = async () => {
+
+
     if (!loanAmount || !repaymentPeriod || Object.values(documents).some(doc => !doc)) {
       alert("Please fill all fields and upload all documents.");
       return;
     }
-
+  
+    let fileHashes = []; // To store the file hashes for cleanup
+    let finalHash = "";  // To store the final metadata hash for cleanup
     try {
       // Upload files to Pinata and get their IPFS hashes
-      const fileHashes = await uploadFilesToPinata();
+      fileHashes = await uploadFilesToPinata();
       console.log("File hashes:", fileHashes);
-
+  
       // Upload metadata with all IPFS hashes and get final IPFS hash
-      const finalHash = await uploadMetadata(fileHashes);
+      finalHash = await uploadMetadata(fileHashes);
       console.log("Final IPFS hash:", finalHash);
-
+  
       // Connect to Ethereum
       const walletProvider = new ethers.BrowserProvider(window.ethereum);
       const signer = await walletProvider.getSigner();
-
+  
       const loanContract = new ethers.Contract(
         LoanContractAddress,
         LoanContractABI,
         signer
       );
-
+  
       // Send loan request transaction with the final IPFS hash
       const tx = await loanContract.requestLoan(
-        loanAmount, // Loan amount in Ether
-        repaymentPeriod, // Repayment period in months
-        finalHash // Final IPFS hash containing all document hashes
+        loanAmount,        // Loan amount in Ether
+        repaymentPeriod,   // Repayment period in months
+        finalHash          // Final IPFS hash containing all document hashes
       );
       await tx.wait();
-
+  
       alert("Loan request submitted successfully!");
       setLoanAmount("");
       setRepaymentPeriod("");
@@ -114,12 +167,29 @@ const RequestLoan = () => {
         document3: null,
         document4: null,
       });
+      navigate('/myloans');
     } catch (error) {
       console.error("Error submitting loan request:", error);
-      alert("Failed to submit loan request.");
+  
+      // Unpin files if the transaction fails
+      if (fileHashes.length > 0) {
+        try {
+          console.log("Unpinning uploaded files...");
+          pinata.unpin(fileHashes);
+          
+          if (finalHash) {
+            await pinata.unpin([finalHash]); // Unpin metadata
+          }
+          console.log("Files unpinned successfully.");
+        } catch (unpinError) {
+          console.error("Error unpinning files:", unpinError);
+        }
+      }
+  
+      alert("Failed to submit loan request. Uploaded files have been unpinned.");
     }
   };
-
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-green-100 flex items-center justify-center">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
@@ -187,3 +257,6 @@ const RequestLoan = () => {
 };
 
 export default RequestLoan;
+
+
+

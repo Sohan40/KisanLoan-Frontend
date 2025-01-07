@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import MyLoans from "./MyLoans";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
-
+import SanctionedLoans from "./SanctionedLoans";
 const LendersDashboard = () => {
-  const [selectedOption, setSelectedOption] = useState("allLoans");
+  const [selectedOption, setSelectedOption] = useState("requested");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -17,16 +17,16 @@ const LendersDashboard = () => {
           </button>
         </div>
         <button
-          className={`w-full py-2 px-4 rounded ${selectedOption === "allLoans" ? "bg-gray-600" : "hover:bg-gray-700"}`}
-          onClick={() => { setSelectedOption("allLoans"); setIsSidebarOpen(false); }}
+          className={`w-full py-2 px-4 rounded ${selectedOption === "requested" ? "bg-gray-600" : "hover:bg-gray-700"}`}
+          onClick={() => { setSelectedOption("requested"); setIsSidebarOpen(false); }}
         >
-          All Loans
+          Requested Loans
         </button>
         <button
-          className={`w-full py-2 px-4 rounded ${selectedOption === "lendedLoans" ? "bg-gray-600" : "hover:bg-gray-700"}`}
-          onClick={() => { setSelectedOption("lendedLoans"); setIsSidebarOpen(false); }}
+          className={`w-full py-2 px-4 rounded ${selectedOption === "sanctioned" ? "bg-gray-600" : "hover:bg-gray-700"}`}
+          onClick={() => { setSelectedOption("sanctioned"); setIsSidebarOpen(false); }}
         >
-          Lended Loans
+          Sanctioned Loans
         </button>
       </aside>
 
@@ -37,7 +37,7 @@ const LendersDashboard = () => {
           </button>
         </div>
 
-        {selectedOption === "allLoans" ? <MyLoans /> : ""}
+        {selectedOption === "requested" ? <MyLoans /> : <SanctionedLoans/>}
       </main>
     </div>
   );
