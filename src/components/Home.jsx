@@ -55,7 +55,21 @@ export default function Home(){
         setBalance('');
         localStorage.removeItem('isWalletConnected');
       }
+useEffect(() => {
+    if (window.ethereum) {
+      const handleAccountsChanged = () => {
+        window.location.reload(); // Reload the page when the account changes
+      };
 
+      // Add listener for MetaMask account changes
+      window.ethereum.on("accountsChanged", handleAccountsChanged);
+
+      // Cleanup the listener on component unmount
+      return () => {
+        window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+      };
+    }
+  }, []);
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-100 to-yellow-50 flex flex-col items-center justify-center">
           <h1 className="text-4xl font-bold text-green-800 mb-6 text-center">

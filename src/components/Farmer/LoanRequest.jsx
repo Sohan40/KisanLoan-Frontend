@@ -73,54 +73,7 @@ const RequestLoan = () => {
     }
   };
 
-  // Submit loan request
-  // const submitRequest = async () => {
-  //   if (!loanAmount || !repaymentPeriod || Object.values(documents).some(doc => !doc)) {
-  //     alert("Please fill all fields and upload all documents.");
-  //     return;
-  //   }
-
-  //   try {
-  //     // Upload files to Pinata and get their IPFS hashes
-  //     const fileHashes = await uploadFilesToPinata();
-  //     console.log("File hashes:", fileHashes);
-
-  //     // Upload metadata with all IPFS hashes and get final IPFS hash
-  //     const finalHash = await uploadMetadata(fileHashes);
-  //     console.log("Final IPFS hash:", finalHash);
-
-  //     // Connect to Ethereum
-  //     const walletProvider = new ethers.BrowserProvider(window.ethereum);
-  //     const signer = await walletProvider.getSigner();
-
-  //     const loanContract = new ethers.Contract(
-  //       LoanContractAddress,
-  //       LoanContractABI,
-  //       signer
-  //     );
-
-  //     // Send loan request transaction with the final IPFS hash
-  //     const tx = await loanContract.requestLoan(
-  //       loanAmount, // Loan amount in Ether
-  //       repaymentPeriod, // Repayment period in months
-  //       finalHash // Final IPFS hash containing all document hashes
-  //     );
-  //     await tx.wait();
-
-  //     alert("Loan request submitted successfully!");
-  //     setLoanAmount("");
-  //     setRepaymentPeriod("");
-  //     setDocuments({
-  //       document1: null,
-  //       document2: null,
-  //       document3: null,
-  //       document4: null,
-  //     });
-  //   } catch (error) {
-  //     console.error("Error submitting loan request:", error);
-  //     alert("Failed to submit loan request.");
-  //   }
-  // };
+  
   const submitRequest = async () => {
 
 

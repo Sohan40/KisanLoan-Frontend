@@ -1,4 +1,4 @@
-// LoanRequests.js
+
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import LoanCard from "./LoanCard"; // LoanCard component is reusable
@@ -24,6 +24,7 @@ const MyLoans = () => {
       const formattedLoans = allLoans
         .map((loan) => ({
           id: loan[0].toString(),
+          lender : loan[2],
           farmer: loan[1],
           amount: loan[3],
           repaymentPeriod: loan[4].toString(),
@@ -33,7 +34,7 @@ const MyLoans = () => {
           emi:loan[8],
           emiPaidCount:loan[9]
         }));
-        console.log(formattedLoans,"hswbxdwuce");
+        
       setLoans(formattedLoans);
       console.log(loans,'ok')
 

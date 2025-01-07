@@ -1,11 +1,27 @@
-// AllRequests.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MyLoans from "./MyLoans";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import SanctionedLoans from "./SanctionedLoans";
+
 const LendersDashboard = () => {
   const [selectedOption, setSelectedOption] = useState("requested");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (window.ethereum) {
+      const handleAccountsChanged = () => {
+        window.location.reload(); // Reload the page when the account changes
+      };
+
+      // Add listener for MetaMask account changes
+      window.ethereum.on("accountsChanged", handleAccountsChanged);
+
+      // Cleanup the listener on component unmount
+      return () => {
+        window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+      };
+    }
+  }, []);
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -37,7 +53,7 @@ const LendersDashboard = () => {
           </button>
         </div>
 
-        {selectedOption === "requested" ? <MyLoans /> : <SanctionedLoans/>}
+        {selectedOption === "requested" ? <MyLoans /> : <SanctionedLoans />}
       </main>
     </div>
   );

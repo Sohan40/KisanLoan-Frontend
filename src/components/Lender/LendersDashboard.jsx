@@ -3,11 +3,26 @@ import React, { useState } from "react";
 import LoanRequests from "./LoanRequests";
 import LendedLoans from "./LendedLoans";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
-
+import { useEffect } from "react";
+// useEffect
 const LendersDashboard = () => {
   const [selectedOption, setSelectedOption] = useState("allLoans");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  useEffect(() => {
+      if (window.ethereum) {
+        const handleAccountsChanged = () => {
+          window.location.reload(); // Reload the page when the account changes
+        };
+  
+        // Add listener for MetaMask account changes
+        window.ethereum.on("accountsChanged", handleAccountsChanged);
+  
+        // Cleanup the listener on component unmount
+        return () => {
+          window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+        };
+      }
+    }, []);
   return (
     <div className="flex h-screen bg-gray-100">
       <aside className={`fixed top-0 left-0 h-full bg-gray-800 text-white p-4 space-y-4 transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:relative md:w-64`}>
