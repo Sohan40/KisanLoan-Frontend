@@ -52,7 +52,21 @@ const LoanRequests = () => {
       console.log("Error fetching loan data:", err);
     }
   };
-
+  useEffect(() => {
+        if (window.ethereum) {
+          const handleAccountsChanged = () => {
+            window.location.reload(); // Reload the page when the account changes
+          };
+    
+          // Add listener for MetaMask account changes
+          window.ethereum.on("accountsChanged", handleAccountsChanged);
+    
+          // Cleanup the listener on component unmount
+          return () => {
+            window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+          };
+        }
+      }, []);
   useEffect(() => {
     fetchCurrentUser();
   }, []);

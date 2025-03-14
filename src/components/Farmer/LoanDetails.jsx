@@ -25,7 +25,8 @@ const LoanDetails = () => {
       const signer = await walletProvider.getSigner();
       const contract = new ethers.Contract(LoanContractAddress, LoanContractABI, signer);
 
-      const tx = await contract.payEmi(id, lender, { value: ethers.parseUnits(amount.toString()) });
+      console.log(amount.toString())
+      const tx = await contract.payEmi(id, lender, { value: amount.toString() });
       await tx.wait();
 
       setShowSnackbar(true);
@@ -62,7 +63,7 @@ const LoanDetails = () => {
           </p>
           <p>
             <strong className="text-gray-700">Amount:</strong>{" "}
-            <span className="text-gray-900">{loan.amount.toString()} ETH</span>
+            <span className="text-gray-900">{loan.amount.toString()/1e18} ETH</span>
           </p>
           <p>
             <strong className="text-gray-700">Repayment Period:</strong>{" "}
@@ -79,7 +80,7 @@ const LoanDetails = () => {
           </p>
           <p>
             <strong className="text-gray-700">EMI:</strong>{" "}
-            <span className="text-gray-900">{loan.emi.toString()}</span>
+            <span className="text-gray-900">{parseInt(loan.emi)/1e18+ " ETH"}</span>
           </p>
           <p>
             <strong className="text-gray-700">EMI Paid Count:</strong>{" "}
@@ -111,7 +112,7 @@ const LoanDetails = () => {
           )}
         </div>
       </div>
-      <Snackbar message="Loan successfully lended!" active={showSnackbar} />
+      <Snackbar message="EMI Repayment successful" active={showSnackbar} />
     </div>
   );
 };

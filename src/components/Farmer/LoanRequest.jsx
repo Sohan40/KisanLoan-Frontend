@@ -85,7 +85,7 @@ const RequestLoan = () => {
     let fileHashes = []; // To store the file hashes for cleanup
     let finalHash = "";  // To store the final metadata hash for cleanup
     try {
-      // Upload files to Pinata and get their IPFS hashes
+      // Upload files to Pinata and get their  IPFS hashes
       fileHashes = await uploadFilesToPinata();
       console.log("File hashes:", fileHashes);
   
@@ -105,7 +105,7 @@ const RequestLoan = () => {
   
       // Send loan request transaction with the final IPFS hash
       const tx = await loanContract.requestLoan(
-        loanAmount,        // Loan amount in Ether
+        ethers.parseUnits(loanAmount),        // Loan amount in Ether
         repaymentPeriod,   // Repayment period in months
         finalHash          // Final IPFS hash containing all document hashes
       );

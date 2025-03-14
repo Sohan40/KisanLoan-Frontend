@@ -32,7 +32,7 @@ const LoanCard = ({ loan }) => {
       </p>
       <p className="text-lg text-gray-700 mb-4">
         <span className="font-semibold">Repayment Period:</span>{" "}
-        {loan.repaymentPeriod} days
+        {loan.repaymentPeriod} months
       </p>
       <p
         className={`text-sm font-semibold mb-4 ${

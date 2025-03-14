@@ -7,27 +7,31 @@ const LoanCard = ({ loan, onLend }) => {
       <h3 className="text-2xl font-bold text-green-800 mb-4 break-words">
         Loan ID: {loan.id}
       </h3>
-      <p className="text-lg text-gray-700 mb-2">
-        <span className="font-semibold">Farmer:</span> {loan.farmer}
-      </p>
+      <p className="text-lg text-gray-700 mb-2 break-words">
+  <span className="font-semibold">Farmer:</span> {loan.farmer}
+</p>
+
       {loan.lender && (
         <p className="text-lg text-gray-700 mb-2">
           <span className="font-semibold">Lender:</span> {loan.lender}
         </p>
       )}
       <p className="text-lg text-gray-700 mb-2">
-        <span className="font-semibold">Amount:</span> {loan.amount.toString()} ETH
+        <span className="font-semibold">Amount:</span> {parseInt(loan.amount)/1e18} ETH
       </p>
       <p className="text-lg text-gray-700 mb-4">
-        <span className="font-semibold">Repayment Period:</span> {loan.repaymentPeriod} days
+        <span className="font-semibold">Repayment Period:</span> {loan.repaymentPeriod} months
       </p>
-      <p
+      
+      {
+        loan.rejected ? <p>Your loan has been rejected , try again</p> : <p
         className={`text-sm font-semibold mb-4 ${
           loan.sanctioned ===true ? "text-green-600": (loan.status ? "text-blue-600" : "text-yellow-600")
         }`}
       >
         Status: {loan.sanctioned ? "Sanctioned": (loan.status ? "Verified" : "Pending")}
-      </p>
+      </p> 
+      }
 
       <Link to={`/myloans/${loan.id}`} state={{loan}}>
                 <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300">

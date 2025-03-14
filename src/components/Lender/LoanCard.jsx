@@ -15,10 +15,10 @@ const LoanCard = ({ loan, onLend }) => {
         </p>
       )}
       <p className="text-lg text-gray-700 mb-2">
-        <span className="font-semibold">Amount:</span> {loan.amount.toString()} ETH
+        <span className="font-semibold">Amount:</span> {parseInt(loan.amount)/1e18} ETH
       </p>
       <p className="text-lg text-gray-700 mb-4">
-        <span className="font-semibold">Repayment Period:</span> {loan.repaymentPeriod} days
+        <span className="font-semibold">Repayment Period:</span> {loan.repaymentPeriod} months
       </p>
       <p
         className={`text-sm font-semibold mb-4 ${

@@ -32,7 +32,8 @@ const MyLoans = () => {
           sanctioned:loan[7],
           cid:loan[6],
           emi:loan[8],
-          emiPaidCount:loan[9]
+          emiPaidCount:loan[9],
+          rejected:loan[10]
         }));
         
       setLoans(formattedLoans);

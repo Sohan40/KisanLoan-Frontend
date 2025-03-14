@@ -43,7 +43,7 @@ const LoanRequests = () => {
       // console.log(signer.address,"Farmer")
       const contract = new ethers.Contract(LoanContractAddress, LoanContractABI, signer);
       
-      const tx = await contract.disburseLoan(id, farmer, { value: ethers.parseEther(amount.toString()) });
+      const tx = await contract.disburseLoan(id, farmer, { value: amount.toString()});
       await tx.wait();
 
       setShowSnackbar(true);
@@ -66,7 +66,11 @@ const LoanRequests = () => {
       <h2 className="text-2xl font-bold mt-4 mb-4">Available Loans</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {loans.map((loan) => (
-          <LoanCard key={loan.id} loan={loan} onLend={() => lendMoney(loan.id, loan.farmer,loan.amount)} />
+          
+          <LoanCard key={loan.id} loan={loan} onLend={() => {
+            lendMoney(loan.id, loan.farmer,(loan.amount).toString())
+            console.log(loan.amount)
+          }} />
         ))}
       </div>
       <Snackbar message="Loan successfully lended!" active={showSnackbar} />
