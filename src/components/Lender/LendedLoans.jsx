@@ -17,6 +17,7 @@ const LendedLoans = () => {
       const contract = new ethers.Contract(LoanContractAddress, LoanContractABI, provider);
       const allLoans = await contract.getLenderLoans(lenderAddress);
 
+      console.log('all',allLoans)
       const formattedLoans = allLoans
         .filter(loan => loan[2] !== '0x0000000000000000000000000000000000000000') // only lended loans
         .map((loan) => ({
@@ -25,10 +26,16 @@ const LendedLoans = () => {
           lender: loan[2],
           amount: ethers.formatEther(loan[3]),
           repaymentPeriod: loan[4].toString(),
-          status: "lended",
+          status: {
+            approved : loan[11][0],
+            sanctioned : loan[11][1],
+            rejected : loan[11][2],
+            indefault : loan[11][3]          
+          },
+          cid: loan[5]
         }));
 
-      console.log(formattedLoans);
+      console.log(formattedLoans,'kaa');
       setLoans(formattedLoans);
     } catch (err) {
       console.log("Error fetching lended loans:", err);

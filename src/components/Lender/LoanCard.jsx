@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const LoanCard = ({ loan, onLend }) => {
   return (
@@ -15,20 +16,20 @@ const LoanCard = ({ loan, onLend }) => {
         </p>
       )}
       <p className="text-lg text-gray-700 mb-2">
-        <span className="font-semibold">Amount:</span> {parseInt(loan.amount)/1e18} ETH
+        <span className="font-semibold">Amount:</span> {(parseInt(loan.amount)/1e18).toString()} ETH
       </p>
       <p className="text-lg text-gray-700 mb-4">
         <span className="font-semibold">Repayment Period:</span> {loan.repaymentPeriod} months
       </p>
       <p
         className={`text-sm font-semibold mb-4 ${
-          loan.status === "lended" ? "text-green-600" : "text-blue-600"
+          loan.status.sanctioned ? "text-green-600" : "text-blue-600"
         }`}
       >
-        Status: {loan.status}
+        Status: {loan.status.sanctioned ? "Sanctioned": "Pending"}
       </p>
 
-      {loan.status === "available" && (
+      {loan.status.sanctioned ? <></> : (
         <button
           onClick={onLend}
           className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300"
@@ -36,6 +37,11 @@ const LoanCard = ({ loan, onLend }) => {
           Lend Money
         </button>
       )}
+      <Link to={`/lendedloans/${loan.id}`} state={{loan}}>
+              <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300">
+                View Details
+              </button>
+        </Link>
     </div>
   );
 };

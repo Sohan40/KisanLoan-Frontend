@@ -36,15 +36,21 @@ const LoanRequests = () => {
       const contract = new ethers.Contract(LoanContractAddress, LoanContractABI, provider);
       const allLoans = await contract.getLoans();
 
+      console.log(allLoans)
       const formattedLoans = allLoans
-        .filter(loan => loan[5] === false && isVerifier) // Check if loan is available and user is a verifier
+        .filter(loan => loan[11].approved === false && isVerifier) // Check if loan is available and user is a verifier
         .map((loan) => ({
           id: loan[0].toString(),
           farmer: loan[1],
           amount: loan[3],
           repaymentPeriod: loan[4].toString(),
-          status: loan[5],
-          cid: loan[6]
+          status: {
+            approved : loan[11][0],
+            sanctioned : loan[11][1],
+            rejected : loan[11][2],
+            indefault : loan[11][3]          
+          },
+          cid: loan[5]
         }));
 
       setLoans(formattedLoans);

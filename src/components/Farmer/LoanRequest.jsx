@@ -8,10 +8,11 @@ const pinata = new PinataSDK({
   pinataGateway: process.env.REACT_APP_GATEWAY_URL,
 });
 
-console.log(pinata.config);
-// Replace with your contract details
+// Contract details
 const LoanContractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 const LoanContractABI = require('../../artifacts/contracts/LoanRequest.sol/LoanRequest.json').abi;
+const NFTContractAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'; // Add your NFT contract address
+const NFTContractABI = require('../../artifacts/contracts/landNFT.sol/LandDocumentNFT.json').abi;
 
 const RequestLoan = () => {
   const [loanAmount, setLoanAmount] = useState("");
@@ -23,24 +24,23 @@ const RequestLoan = () => {
     document4: null,
   });
   const [uploadStatus, setUploadStatus] = useState("");
+  const [mintingStatus, setMintingStatus] = useState("");
+  const [tokenId, setTokenId] = useState(null);
   const navigate = useNavigate();
 
-  // Handle file input changes
   const handleFileChange = (event, documentKey) => {
     if (event.target.files) {
       setDocuments((prevDocuments) => ({
         ...prevDocuments,
-        [documentKey]: event.target.files[0], // store only the first file
+        [documentKey]: event.target.files[0],
       }));
     }
   };
 
-  // Upload files to Pinata and return their IPFS hashes
   const uploadFilesToPinata = async () => {
     try {
       setUploadStatus("Uploading files to Pinata...");
       const uploadedHashes = [];
-      // Upload each document
       for (const key in documents) {
         const file = documents[key];
         if (file) {
@@ -57,14 +57,9 @@ const RequestLoan = () => {
     }
   };
 
-  // Upload metadata with all IPFS hashes and return final IPFS hash
   const uploadMetadata = async (fileHashes) => {
     try {
-      const metadata = {
-        documents: fileHashes,
-      };
-
-      // Upload metadata object to Pinata
+      const metadata = { documents: fileHashes };
       const upload = await pinata.upload.json(metadata);
       return upload.IpfsHash;
     } catch (error) {
@@ -73,45 +68,83 @@ const RequestLoan = () => {
     }
   };
 
-  
   const submitRequest = async () => {
-
-
     if (!loanAmount || !repaymentPeriod || Object.values(documents).some(doc => !doc)) {
       alert("Please fill all fields and upload all documents.");
       return;
     }
-  
-    let fileHashes = []; // To store the file hashes for cleanup
-    let finalHash = "";  // To store the final metadata hash for cleanup
+
+    let fileHashes = [];
+    let finalHash = "";
     try {
-      // Upload files to Pinata and get their  IPFS hashes
+      // Upload documents
       fileHashes = await uploadFilesToPinata();
-      console.log("File hashes:", fileHashes);
-  
-      // Upload metadata with all IPFS hashes and get final IPFS hash
       finalHash = await uploadMetadata(fileHashes);
-      console.log("Final IPFS hash:", finalHash);
-  
+
       // Connect to Ethereum
       const walletProvider = new ethers.BrowserProvider(window.ethereum);
       const signer = await walletProvider.getSigner();
-  
+
+      // Mint NFT
+      setMintingStatus("Minting land document NFT...");
+      const nftContract = new ethers.Contract(
+        NFTContractAddress,
+        NFTContractABI,
+        signer
+      );
+      
+      const mintTx = await nftContract.mintLandNFT(
+        await signer.getAddress(),
+        `ipfs://${finalHash}`
+      );
+      const mintReceipt = await mintTx.wait();
+      console.log(mintReceipt)
+
+      const transferEvent = mintReceipt.logs
+      .map(log => {
+        try {
+          return nftContract.interface.parseLog(log);
+        } catch {
+          return null;
+        }
+      })
+      .find(event => event?.name === "Transfer");
+
+    if (!transferEvent) {
+      throw new Error("Transfer event not found");
+    }
+
+       const tokenId = transferEvent.args.tokenId.toString();
+    
+      setTokenId(tokenId);
+      setMintingStatus("NFT minted successfully!");
+
+      // Approve loan contract to transfer NFT
+      setMintingStatus("Approving NFT transfer...");
+      const approveTx = await nftContract.approve(
+        LoanContractAddress,
+        tokenId
+      );
+      await approveTx.wait();
+
+      // Submit loan request with NFT collateral
       const loanContract = new ethers.Contract(
         LoanContractAddress,
         LoanContractABI,
         signer
       );
-  
-      // Send loan request transaction with the final IPFS hash
+
       const tx = await loanContract.requestLoan(
-        ethers.parseUnits(loanAmount),        // Loan amount in Ether
-        repaymentPeriod,   // Repayment period in months
-        finalHash          // Final IPFS hash containing all document hashes
+        ethers.parseUnits(loanAmount),
+        parseInt(repaymentPeriod),
+        finalHash,
+        NFTContractAddress,  // New NFT contract address parameter
+        tokenId        // New token ID parameter
       );
       await tx.wait();
-  
-      alert("Loan request submitted successfully!");
+
+      alert("Loan request with NFT collateral submitted successfully!");
+      // Reset form
       setLoanAmount("");
       setRepaymentPeriod("");
       setDocuments({
@@ -120,35 +153,35 @@ const RequestLoan = () => {
         document3: null,
         document4: null,
       });
+      setTokenId(null);
+      setMintingStatus("");
       navigate('/myloans');
     } catch (error) {
-      console.error("Error submitting loan request:", error);
-  
-      // Unpin files if the transaction fails
+      console.error("Error in loan request process:", error);
+      setMintingStatus("Transaction failed. See console for details.");
+
+      // Cleanup: Unpin files if error occurs after upload
       if (fileHashes.length > 0) {
         try {
-          console.log("Unpinning uploaded files...");
-          pinata.unpin(fileHashes);
-          
-          if (finalHash) {
-            await pinata.unpin([finalHash]); // Unpin metadata
-          }
-          console.log("Files unpinned successfully.");
+          await pinata.unpin(fileHashes);
+          if (finalHash) await pinata.unpin([finalHash]);
         } catch (unpinError) {
-          console.error("Error unpinning files:", unpinError);
+          console.error("Cleanup failed:", unpinError);
         }
       }
-  
-      alert("Failed to submit loan request. Uploaded files have been unpinned.");
+
+      alert(`Error: ${error.message}`);
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-green-100 flex items-center justify-center">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
         <h1 className="text-3xl font-extrabold text-green-800 mb-6 text-center">
-          Request a Loan
+          Request Loan with NFT Collateral
         </h1>
+        
+        {/* Existing form inputs */}
         <input
           type="number"
           placeholder="Loan Amount"
@@ -163,53 +196,49 @@ const RequestLoan = () => {
           onChange={(e) => setRepaymentPeriod(e.target.value)}
           className="border border-green-300 rounded-lg p-3 mb-4 w-full focus:ring-2 focus:ring-green-500 focus:outline-none"
         />
-        <label className="form-label mb-2 block text-green-800 font-bold">
-          Upload Document 1
-        </label>
-        <input
-          type="file"
-          onChange={(e) => handleFileChange(e, "document1")}
-          className="mb-4"
-        />
-        <label className="form-label mb-2 block text-green-800 font-bold">
-          Upload Document 2
-        </label>
-        <input
-          type="file"
-          onChange={(e) => handleFileChange(e, "document2")}
-          className="mb-4"
-        />
-        <label className="form-label mb-2 block text-green-800 font-bold">
-          Upload Document 3
-        </label>
-        <input
-          type="file"
-          onChange={(e) => handleFileChange(e, "document3")}
-          className="mb-4"
-        />
-        <label className="form-label mb-2 block text-green-800 font-bold">
-          Upload Document 4
-        </label>
-        <input
-          type="file"
-          onChange={(e) => handleFileChange(e, "document4")}
-          className="mb-4"
-        />
+        
+        {/* Document upload sections */}
+        {[1, 2, 3, 4].map((num) => (
+          <div key={num}>
+            <label className="form-label mb-2 block text-green-800 font-bold">
+              Upload Document {num}
+            </label>
+            <input
+              type="file"
+              onChange={(e) => handleFileChange(e, `document${num}`)}
+              className="mb-4"
+            />
+          </div>
+        ))}
+
+        {/* Status indicators */}
+        {uploadStatus && (
+          <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+            <p className="text-sm text-blue-600">{uploadStatus}</p>
+          </div>
+        )}
+        
+        {mintingStatus && (
+          <div className="mb-4 p-3 bg-purple-50 rounded-lg">
+            <p className="text-sm text-purple-600">{mintingStatus}</p>
+            {tokenId && (
+              <p className="text-sm text-purple-600 mt-2">
+                Minted NFT Token ID: {tokenId}
+              </p>
+            )}
+          </div>
+        )}
+
         <button
           onClick={submitRequest}
           className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg w-full transition-all"
+          disabled={!!mintingStatus}
         >
-          Submit Request
+          {tokenId ? "Submit Loan Request" : "Start Loan Process"}
         </button>
-        {uploadStatus && (
-          <p className="mt-4 text-sm text-gray-600">{uploadStatus}</p>
-        )}
       </div>
     </div>
   );
 };
 
 export default RequestLoan;
-
-
-

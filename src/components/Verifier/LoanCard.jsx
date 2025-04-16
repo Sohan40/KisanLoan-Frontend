@@ -28,7 +28,7 @@ const LoanCard = ({ loan }) => {
         </p>
       )}
       <p className="text-lg text-gray-700 mb-2">
-        <span className="font-semibold">Amount:</span> {loan.amount.toString()} ETH
+        <span className="font-semibold">Amount:</span> {(parseInt(loan.amount)/1e18).toString()} ETH
       </p>
       <p className="text-lg text-gray-700 mb-4">
         <span className="font-semibold">Repayment Period:</span>{" "}
@@ -39,16 +39,17 @@ const LoanCard = ({ loan }) => {
           loan.status ? "text-green-600" : "text-blue-600"
         }`}
       >
-        Status: {loan.status ? "verified" : "unverified"}
+        Status: {loan.status.approved ? "verified" : "unverified"}
       </p>
 
-      {loan.status === false && (
+      {loan.status.approved ?<></> : (
         <Link to={`/verify/${loan.id}`} state={{loan}}>
           <button className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg hover:brightness-110 transition-all duration-300">
             View Details
           </button>
         </Link>
-      )}
+      )
+      }
     </div>
   );
 };

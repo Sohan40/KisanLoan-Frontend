@@ -21,14 +21,19 @@ const LoanRequests = () => {
       const allLoans = await contract.getLoans();
 
       const formattedLoans = allLoans
-        .filter(loan => (loan[2] === '0x0000000000000000000000000000000000000000' && loan[5] === true) ) // available loans only
+        .filter(loan => (loan[2] === '0x0000000000000000000000000000000000000000' && loan[11].approved === true) ) // available loans only
         .map((loan) => ({
           id: loan[0].toString(),
           farmer: loan[1],
           amount: loan[3],
           repaymentPeriod: loan[4].toString(),
-          status: "available",
-          cid:loan[6]
+          status: {
+            approved : loan[11][0],
+            sanctioned : loan[11][1],
+            rejected : loan[11][2],
+            indefault : loan[11][3],
+          },
+          cid:loan[5]
         }));
         console.log(formattedLoans,"hswbxdwuce");
       setLoans(formattedLoans);
@@ -50,7 +55,7 @@ const LoanRequests = () => {
       setTimeout(() => setShowSnackbar(false), 3000);
 
       setLoans((prevLoans) =>
-        prevLoans.map((loan) => (loan.id === id ? { ...loan, status: "lended" } : loan))
+        prevLoans.map((loan) => (loan.id === id ? { ...loan, status: {...loan.status, sanctioned:true} } : loan))
       );
     } catch (error) {
       console.error("Error lending money:", error);

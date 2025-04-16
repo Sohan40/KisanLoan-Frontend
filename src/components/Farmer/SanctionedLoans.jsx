@@ -21,20 +21,26 @@ const MyLoans = () => {
       console.log('okokok')
       const allLoans = await contract.getFarmerLoans();
 
-      const formattedLoans = allLoans.filter((loan)=> (loan[7]=== true))
-        .map((loan) => ({
-          id: loan[0].toString(),
-          lender : loan[2],
-          farmer: loan[1],
-          amount: loan[3],
-          repaymentPeriod: loan[4].toString(),
-          status: loan[5],
-          sanctioned:loan[7],
-          cid:loan[6],
-          emi:loan[8],
-          emiPaidCount:loan[9],
-          rejected:loan[10]
-        }));
+      const formattedLoans = allLoans.filter((loan)=> (loan[11].sanctioned=== true))
+      .map((loan) => ({
+        id: loan[0].toString(),
+        lender : loan[2],
+        farmer: loan[1],
+        amount: loan[3],
+        repaymentPeriod: loan[4].toString(),
+        tokenId : loan[9].toString(),
+        cid:loan[5],
+        emi:loan[6],
+        emiPaidCount:loan[7],
+        status:{
+          approved:loan[11][0],
+          sanctioned:loan[11][1],
+          rejected:loan[11][2],
+          indefault:loan[11][3],
+          closed:loan[11][4],
+          liquidated:loan[11][5],
+        }
+      }));
         
       setLoans(formattedLoans);
       

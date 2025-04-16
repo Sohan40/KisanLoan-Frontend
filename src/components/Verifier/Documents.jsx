@@ -189,6 +189,7 @@ export default function Documents() {
   useEffect(() => {
     const fetchFileCids = async () => {
       try {
+        console.log(loan.cid)
         const data = await pinata.gateways.get(loan.cid);
 
         fileCids = data.data.documents;
